@@ -713,10 +713,11 @@ img {
 }
 
 .scroll-indicator {
-    position: absolute;
-    bottom: 3rem;
+    position: fixed;        /* 改这里 */
+    bottom: 2rem;          /* 改这里 */
     left: 50%;
     transform: translateX(-50%);
+    z-index: 100;          /* 加这行 */
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -1492,7 +1493,14 @@ img {
         text-align: center;
         gap: 2rem;
     }
+    .carousel-btn.prev {
+        left: 10px;
+    }
     
+    .carousel-btn.next {
+        right: 10px;
+    }
+    /* 结束 */
     .hero-image-wrapper {
         order: -1;
     }
@@ -2057,5 +2065,175 @@ img {
     
     .stat-number {
         font-size: 1.5rem;
+    }
+}
+
+/* 修复：增大圆形轮播尺寸 */
+.hero-image-container {
+    position: relative;
+    width: 500px;      /* 改为 500px */
+    height: 500px;     /* 改为 500px */
+    margin: 0 auto;    /* 添加：居中 */
+}
+
+/* 修复：轮播图容器 */
+.carousel-container {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    overflow: hidden;
+}
+
+.carousel-wrapper {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+}
+
+/* 轮播幻灯片 */
+.carousel-slide {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    transition: opacity 0.8s ease-in-out;
+    border-radius: 50%;
+}
+
+.carousel-slide.active {
+    opacity: 1;
+}
+
+.carousel-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+    display: block;
+}
+
+/* 修复：轮播按钮样式 - 更大更显眼 */
+.carousel-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(0, 0, 0, 0.4);              /* 改为黑色半透明 */
+    border: 2px solid rgba(255, 255, 255, 0.6); /* 增加边框透明度 */
+    color: white;
+    width: 50px;        /* 增大到 50px */
+    height: 50px;       /* 增大到 50px */
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;    /* 增大图标 */
+    transition: all 0.3s ease;
+    z-index: 20;        /* 改为 20，确保在最上层 */
+    backdrop-filter: blur(10px);
+}
+
+.carousel-btn:hover {
+    background: rgba(0, 0, 0, 0.6);
+    border-color: rgba(255, 255, 255, 0.9);
+    transform: translateY(-50%) scale(1.15);
+}
+
+.carousel-btn.prev {
+    left: -80px;           /* 改这里 */
+}
+
+.carousel-btn.next {
+    right: -80px;          /* 改这里 */
+}
+
+/* 轮播指示点 */
+.carousel-dots {
+    position: absolute;
+    bottom: 25px;       /* 增加间距 */
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 10px;          /* 增加间距 */
+    z-index: 20;        /* 改为 20 */
+}
+
+.dot {
+    width: 12px;        /* 增大点 */
+    height: 12px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.5);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: 2px solid rgba(255, 255, 255, 0.7);
+}
+
+.dot.active {
+    background: rgba(255, 255, 255, 0.95);
+    width: 30px;        /* 增大活跃点 */
+    border-radius: 6px;
+}
+
+.dot:hover {
+    background: rgba(255, 255, 255, 0.7);
+}
+
+/* 深色主题适配 */
+[data-theme="dark"] .carousel-btn {
+    background: rgba(0, 0, 0, 0.4);
+    border-color: rgba(192, 132, 252, 0.5);
+    color: rgba(255, 255, 255, 0.9);
+}
+
+[data-theme="dark"] .carousel-btn:hover {
+    background: rgba(0, 0, 0, 0.6);
+    border-color: rgba(192, 132, 252, 0.8);
+}
+
+.scroll-indicator {
+    position: absolute;
+    bottom: 3rem;  /* 距离底部固定距离 */
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    z-index: 5;
+    width: 100%;  /* 添加：全宽 */
+}
+
+.scroll-mouse {
+    width: 30px;
+    height: 50px;
+    border: 2px solid var(--border);
+    border-radius: 15px;
+    display: flex;
+    justify-content: center;
+    padding-top: 8px;
+}
+
+.scroll-wheel {
+    width: 4px;
+    height: 10px;
+    background: var(--primary);
+    border-radius: 2px;
+    animation: scrollWheel 2s infinite;
+}
+
+@keyframes scrollWheel {
+    0% {
+        transform: translateY(0);
+        opacity: 1;
+    }
+    100% {
+        transform: translateY(20px);
+        opacity: 0;
     }
 }

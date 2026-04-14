@@ -1,5 +1,5 @@
 const AppState = {
-    currentLang: 'en',
+    currentLang: 'zn',
     currentTheme: 'dark',
     currentSection: 'home',
     isMenuOpen: false,
@@ -39,7 +39,7 @@ function initLanguage() {
 }
 
 function toggleLanguage() {
-    const newLang = AppState.currentLang === 'en' ? 'ar' : 'en';
+    const newLang = AppState.currentLang === 'en' ? 'zn' : 'en';
     setLanguage(newLang);
     localStorage.setItem('portfolio-lang', newLang);
 }
@@ -49,38 +49,34 @@ function setLanguage(lang) {
     const html = document.documentElement;
     const body = document.body;
     
-    if (lang === 'ar') {
-        html.setAttribute('lang', 'ar');
-        html.setAttribute('dir', 'rtl');
-        body.setAttribute('data-lang', 'ar');
-        body.setAttribute('data-dir', 'rtl');
-    } else {
-        html.setAttribute('lang', 'en');
-        html.setAttribute('dir', 'ltr');
-        body.setAttribute('data-lang', 'en');
-        body.setAttribute('data-dir', 'ltr');
-    }
+    html.setAttribute('lang', lang === 'zn' ? 'zh' : 'en');
+    html.setAttribute('dir', 'ltr');
+    body.setAttribute('data-lang', lang);
+    body.setAttribute('data-dir', 'ltr');
+    
     updateLanguageUI();
 }
 
 function updateLanguageUI() {
-    const textElements = document.querySelectorAll('[data-text-en], [data-text-ar]');
+    const textElements = document.querySelectorAll('[data-text-zn], [data-text-en]');
     textElements.forEach(element => {
+        const znText = element.getAttribute('data-text-zn');
         const enText = element.getAttribute('data-text-en');
-        const arText = element.getAttribute('data-text-ar');
-        if (AppState.currentLang === 'ar' && arText) {
-            element.textContent = arText;
+        
+        if (AppState.currentLang === 'zn' && znText) {
+            element.textContent = znText;
         } else if (AppState.currentLang === 'en' && enText) {
             element.textContent = enText;
         }
     });
     
-    const placeholderElements = document.querySelectorAll('[data-placeholder-en], [data-placeholder-ar]');
+    const placeholderElements = document.querySelectorAll('[data-placeholder-zn], [data-placeholder-en]');
     placeholderElements.forEach(element => {
+        const znPlaceholder = element.getAttribute('data-placeholder-zn');
         const enPlaceholder = element.getAttribute('data-placeholder-en');
-        const arPlaceholder = element.getAttribute('data-placeholder-ar');
-        if (AppState.currentLang === 'ar' && arPlaceholder) {
-            element.setAttribute('placeholder', arPlaceholder);
+        
+        if (AppState.currentLang === 'zn' && znPlaceholder) {
+            element.setAttribute('placeholder', znPlaceholder);
         } else if (AppState.currentLang === 'en' && enPlaceholder) {
             element.setAttribute('placeholder', enPlaceholder);
         }
@@ -90,7 +86,7 @@ function updateLanguageUI() {
     if (langToggle) {
         const langText = langToggle.querySelector('.lang-text');
         if (langText) {
-            langText.textContent = AppState.currentLang === 'en' ? 'AR' : 'EN';
+            langText.textContent = AppState.currentLang === 'zn' ? 'En' : '中文';
         }
     }
 }
@@ -760,6 +756,98 @@ function initSmoothScroll() {
                 }
             }
         });
+    });
+}
+
+class PhotoCarousel {
+    constructor() {
+        this.carousel = document.getElementById('photoCarousel');
+        this.slides = document.querySelectorAll('.carousel-slide');
+        this.prevBtn = document.getElementById('prevBtn');
+        this.nextBtn = document.getElementById('nextBtn');
+        this.dotsContainer = document.getElementById('carouselDots');
+        
+        this.currentIndex = 0;
+        this.autoPlayInterval = null;
+        
+        this.init();
+    }
+
+    init() {
+        this.createDots();
+        this.attachEventListeners();
+        this.showSlide(0);
+        this.startAutoPlay();
+    }
+
+    createDots() {
+        this.slides.forEach((_, index) => {
+            const dot = document.createElement('div');
+            dot.className = 'dot' + (index === 0 ? ' active' : '');
+            dot.addEventListener('click', () => this.goToSlide(index));
+            this.dotsContainer.appendChild(dot);
+        });
+        this.dots = document.querySelectorAll('.dot');
+    }
+
+    attachEventListeners() {
+        this.prevBtn.addEventListener('click', () => this.prevSlide());
+        this.nextBtn.addEventListener('click', () => this.nextSlide());
+        
+        // 鼠标悬停时暂停自动播放
+        this.carousel.addEventListener('mouseenter', () => this.stopAutoPlay());
+        this.carousel.addEventListener('mouseleave', () => this.startAutoPlay());
+    }
+
+    showSlide(index) {
+        // 移除所有 active 类
+        this.slides.forEach(slide => slide.classList.remove('active'));
+        this.dots.forEach(dot => dot.classList.remove('active'));
+        
+        // 添加 active 类到当前幻灯片
+        this.slides[index].classList.add('active');
+        this.dots[index].classList.add('active');
+    }
+
+    nextSlide() {
+        this.currentIndex = (this.currentIndex + 1) % this.slides.length;
+        this.showSlide(this.currentIndex);
+    }
+
+    prevSlide() {
+        this.currentIndex = (this.currentIndex - 1 + this.slides.length) % this.slides.length;
+        this.showSlide(this.currentIndex);
+    }
+
+    goToSlide(index) {
+        this.currentIndex = index;
+        this.showSlide(this.currentIndex);
+    }
+
+    startAutoPlay() {
+        this.autoPlayInterval = setInterval(() => this.nextSlide(), 5000); // 5秒切换一次
+    }
+
+    stopAutoPlay() {
+        clearInterval(this.autoPlayInterval);
+    }
+}
+
+// 页面加载完成后初始化轮播
+document.addEventListener('DOMContentLoaded', () => {
+    new PhotoCarousel();
+});
+
+const scrollIndicator = document.querySelector('.scroll-indicator');
+if (scrollIndicator) {
+    window.addEventListener('scroll', function() {
+        if (window.scrollY > window.innerHeight * 0.8) {
+            scrollIndicator.style.opacity = '0';
+            scrollIndicator.style.visibility = 'hidden';
+        } else {
+            scrollIndicator.style.opacity = '1';
+            scrollIndicator.style.visibility = 'visible';
+        }
     });
 }
 
