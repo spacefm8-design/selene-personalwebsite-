@@ -29,8 +29,9 @@
     --transition: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
     --transition-fast: 0.15s cubic-bezier(0.4, 0, 0.2, 1);
     --transition-smooth: 0.25s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-    --font-primary: 'Tajawal', sans-serif;
-    --font-code: 'Fira Code', monospace;
+    --font-primary: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; /* 英文字体 */
+    --font-chinese: 'Noto Sans SC', 'Microsoft YaHei', 'PingFang SC', 'Hiragino Sans GB', 'WenQuanYi Micro Hei', sans-serif; /* 中文字体，带系统字体回退 */
+    --font-code: 'Fira Code', 'Cascadia Code', 'Consolas', 'Monaco', 'Courier New', monospace;
 }
 
 [data-theme="light"] {
@@ -51,6 +52,43 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+/* 确保Font Awesome图标正确显示 - 最高优先级 */
+i, .fas, .far, .fab, .fa, .fa-solid, .fa-regular, .fa-brands,
+[class*="fa-"] {
+    font-family: "Font Awesome 6 Free", "Font Awesome 6 Brands", "Font Awesome 6 Pro", "Font Awesome 5 Free", "Font Awesome 5 Brands", "Font Awesome 5 Pro", "FontAwesome" !important;
+    font-style: normal;
+    font-weight: 900;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+/* 确保图标在任何环境下都能正确显示 */
+body[data-lang="zn"] i,
+body[data-lang="zn"] .fas,
+body[data-lang="zn"] .far,
+body[data-lang="zn"] .fab,
+body[data-lang="zn"] .fa,
+body[data-lang="zn"] .fa-solid,
+body[data-lang="zn"] .fa-regular,
+body[data-lang="zn"] .fa-brands,
+body[data-lang="zn"] [class*="fa-"] {
+    font-family: "Font Awesome 6 Free", "Font Awesome 6 Brands", "Font Awesome 6 Pro", "Font Awesome 5 Free", "Font Awesome 5 Brands", "Font Awesome 5 Pro", "FontAwesome" !important;
+}
+
+/* Font Awesome brands (社交图标) */
+.fab, .fa-brands {
+    font-family: "Font Awesome 6 Brands", "Font Awesome 5 Brands", "FontAwesome" !important;
+}
+
+/* Font Awesome regular */
+.far, .fa-regular {
+    font-family: "Font Awesome 6 Pro", "Font Awesome 5 Pro", "FontAwesome" !important;
+    font-weight: 400;
 }
 
 html {
@@ -59,7 +97,7 @@ html {
 }
 
 body {
-    font-family: var(--font-primary);
+    font-family: var(--font-chinese), var(--font-primary), sans-serif;
     font-weight: 500;
     background: var(--bg-dark);
     color: var(--text-primary);
@@ -69,6 +107,63 @@ body {
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-rendering: optimizeLegibility;
+}
+
+/* 英文环境下的字体设置 */
+body[data-lang="en"] {
+    font-family: var(--font-primary), var(--font-chinese), sans-serif;
+}
+
+
+
+/* 确保所有包含中文的内容使用中文字体 */
+h1, h2, h3, h4, h5, h6,
+p, span, div, a, li,
+.hero-description,
+.code-line,
+.nav-text,
+.lang-text,
+.timeline-description,
+.timeline-achievements,
+.achievement-item,
+.project-description,
+.contact-label,
+.contact-value,
+.skill-name,
+.skill-percent,
+.stat-label,
+.about-text,
+.badge-title,
+.badge-libs {
+    font-family: var(--font-chinese), var(--font-primary), sans-serif;
+    font-feature-settings: "kern", "liga", "clig", "calt";
+}
+
+/* 为代码和等宽字体保留单独设置 */
+.font-code,
+.code-block,
+.code-keyword,
+.code-variable,
+.code-operator,
+.code-string,
+.brand-logo,
+.hero-greeting,
+.hero-name,
+.hero-title,
+.section-number,
+.section-title,
+.category-title,
+.timeline-year,
+.timeline-title,
+.timeline-company,
+.timeline-badge,
+.project-title,
+.skill-name,
+.skill-percent,
+.stat-number,
+.badge-title,
+.loader-code-text {
+    font-family: var(--font-code), var(--font-chinese), monospace;
 }
 
 h1, h2, h3, h4, h5, h6 {
@@ -128,6 +223,7 @@ img {
     opacity: 0;
     transform: translateY(20px);
     animation: fadeInUp 0.5s ease forwards;
+    font-family: var(--font-chinese);
 }
 
 .code-line[data-line="1"] { animation-delay: 0.1s; }
@@ -387,7 +483,7 @@ img {
 
 .particle {
     position: absolute;
-    font-family: var(--font-code);
+    font-family: var(--font-chinese);
     font-size: 1.5rem;
     color: var(--primary);
     opacity: 0.1;
@@ -676,6 +772,7 @@ img {
     font-size: 1rem;
     font-weight: 700;
     color: var(--text-primary);
+    font-family: var(--font-chinese);
 }
 
 .badge-libs {
@@ -782,7 +879,7 @@ img {
 }
 
 .section-title {
-    font-family: var(--font-code);
+    font-family: var(--font-chinese);
     font-size: 2.5rem;
     font-weight: 700;
     display: flex;
@@ -906,7 +1003,7 @@ img {
 }
 
 .category-title {
-    font-family: var(--font-code);
+    font-family: var(--font-chinese);
     font-size: 1.5rem;
     color: var(--primary);
     margin-bottom: 2rem;
@@ -930,7 +1027,7 @@ img {
 }
 
 .skill-name {
-    font-family: var(--font-code);
+    font-family: var(--font-chinese);
     color: var(--cyan);
     font-weight: 600;
 }
@@ -998,7 +1095,7 @@ img {
 
 .timeline-marker {
     position: absolute;
-    left: -2.5rem;
+    left: -2rem;
     top: 0;
     width: 16px;
     height: 16px;
@@ -1009,6 +1106,7 @@ img {
         0 0 20px var(--primary),
         0 0 40px var(--primary);
     animation: pulse 2s infinite;
+    transform: translateX(-50%);
 }
 
 .timeline-content {
@@ -1054,7 +1152,7 @@ img {
 }
 
 .timeline-title {
-    font-family: var(--font-code);
+    font-family: var(--font-chinese);
     font-size: 1.5rem;
     color: var(--cyan);
     margin-bottom: 0.5rem;
@@ -1062,6 +1160,7 @@ img {
 }
 
 .timeline-company {
+    font-family: var(--font-chinese);
     color: var(--purple);
     font-weight: 600;
     margin-bottom: 1rem;
@@ -1215,7 +1314,7 @@ img {
 }
 
 .project-title {
-    font-family: var(--font-code);
+    font-family: var(--font-chinese);
     font-size: 1.5rem;
     color: var(--primary);
     margin-bottom: 1rem;
@@ -1232,6 +1331,97 @@ img {
     display: flex;
     flex-wrap: wrap;
     gap: 0.5rem;
+}
+
+/* Video Upload Styles */
+.video-card .project-image {
+    position: relative;
+    cursor: pointer;
+}
+
+.video-container {
+    position: relative;
+    overflow: hidden;
+}
+
+.video-placeholder {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    transition: all var(--transition);
+}
+
+.video-placeholder i {
+    font-size: 3rem;
+    color: var(--primary);
+    transition: all var(--transition);
+}
+
+.video-placeholder .upload-text {
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    font-family: var(--font-chinese);
+}
+
+.video-card:hover .video-placeholder {
+    background: var(--bg-hover);
+}
+
+.video-card:hover .video-placeholder i {
+    transform: scale(1.1);
+    color: var(--cyan);
+}
+
+.video-preview {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 0;
+    z-index: 5;
+    display: none;
+}
+
+.video-card.video-active .video-preview,
+.video-card-auto .video-preview {
+    display: block;
+}
+
+.video-card.video-active .video-placeholder,
+.video-card-auto .video-placeholder {
+    display: none;
+}
+
+/* Auto-play video card - no upload needed */
+.video-card-auto {
+    cursor: default;
+}
+
+.video-card-auto .video-container {
+    cursor: default;
+}
+
+.video-preview::-webkit-media-controls {
+    background: rgba(0, 0, 0, 0.5);
+}
+
+.video-preview::-webkit-media-controls-panel {
+    background: rgba(0, 0, 0, 0.7);
+}
+
+/* Hide overlay when video is playing to allow control interaction */
+.video-card.video-active .video-overlay {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.video-card.video-active:hover .video-overlay {
+    opacity: 1;
+    pointer-events: auto;
 }
 
 .contact-content {
@@ -1288,14 +1478,14 @@ img {
     font-size: 0.9rem;
     color: var(--text-muted);
     margin-bottom: 0.3rem;
-    font-family: var(--font-code);
+    font-family: var(--font-chinese);
 }
 
 .contact-value {
     color: var(--primary);
     font-weight: 600;
     text-decoration: none;
-    font-family: var(--font-code);
+    font-family: var(--font-chinese);
     display: block;
 }
 

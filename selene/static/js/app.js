@@ -855,3 +855,124 @@ window.Animations = {
     initParallax,
     initSmoothScroll
 };
+
+// Video Upload and Preview Functionality for Multiple Cards
+function initVideoUpload() {
+    const videoCards = document.querySelectorAll('.video-card');
+    
+    if (videoCards.length === 0) {
+        console.log('No video cards found');
+        return;
+    }
+
+    videoCards.forEach((card, index) => {
+        const videoUpload = card.querySelector('.video-upload-input');
+        const videoPreview = card.querySelector('.video-preview');
+        const videoPlaceholder = card.querySelector('.video-placeholder');
+        const videoContainer = card.querySelector('.video-container');
+
+        if (!videoUpload || !videoPreview || !videoPlaceholder || !videoContainer) {
+            console.log(`Video elements not found for card ${index}`);
+            return;
+        }
+
+        // Load saved video from localStorage
+        const savedVideoData = localStorage.getItem(`video-data-${index}`);
+        if (savedVideoData) {
+            try {
+                const videoData = JSON.parse(savedVideoData);
+                if (videoData.dataUrl) {
+                    loadVideo(card, videoPreview, videoPlaceholder, videoData.dataUrl);
+                }
+            } catch (e) {
+                console.log('Error loading saved video:', e);
+            }
+        }
+
+        // Click on placeholder to trigger file input
+        videoPlaceholder.addEventListener('click', (e) => {
+            e.stopPropagation();
+            videoUpload.click();
+        });
+
+        // Click on video to toggle play/pause
+        videoPreview.addEventListener('click', (e) => {
+            if (e.target === videoPreview) {
+                if (videoPreview.paused) {
+                    videoPreview.play();
+                } else {
+                    videoPreview.pause();
+                }
+            }
+        });
+
+        // Handle file selection
+        videoUpload.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file && file.type.startsWith('video/')) {
+                // Convert to base64 for persistence
+                const reader = new FileReader();
+                reader.onload = (event) => {
+                    const dataUrl = event.target.result;
+                    
+                    // Save to localStorage
+                    localStorage.setItem(`video-data-${index}`, JSON.stringify({
+                        dataUrl: dataUrl,
+                        name: file.name,
+                        type: file.type
+                    }));
+                    
+                    loadVideo(card, videoPreview, videoPlaceholder, dataUrl);
+                };
+                reader.readAsDataURL(file);
+            } else {
+                alert('请选择有效的视频文件');
+            }
+        });
+
+        // Drag and drop support
+        videoContainer.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            videoContainer.style.border = '2px dashed var(--primary)';
+        });
+
+        videoContainer.addEventListener('dragleave', (e) => {
+            e.preventDefault();
+            videoContainer.style.border = '';
+        });
+
+        videoContainer.addEventListener('drop', (e) => {
+            e.preventDefault();
+            videoContainer.style.border = '';
+            
+            const files = e.dataTransfer.files;
+            if (files.length > 0 && files[0].type.startsWith('video/')) {
+                videoUpload.files = files;
+                videoUpload.dispatchEvent(new Event('change'));
+            }
+        });
+    });
+}
+
+function loadVideo(card, videoPreview, videoPlaceholder, dataUrl) {
+    // Set video source
+    videoPreview.querySelector('source').src = dataUrl;
+    videoPreview.load();
+    
+    // Show video, hide placeholder
+    videoPreview.style.display = 'block';
+    videoPlaceholder.style.display = 'none';
+    
+    // Auto-play when loaded
+    videoPreview.addEventListener('loadeddata', () => {
+        card.classList.add('video-active');
+        videoPreview.play().catch(err => {
+            console.log('Auto-play prevented:', err);
+        });
+    }, { once: true });
+}
+
+// Initialize video upload when DOM is ready
+document.addEventListener('DOMContentLoaded', () => {
+    initVideoUpload();
+});
